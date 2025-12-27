@@ -11,46 +11,22 @@ $extension = ".png";
 $send_buffer_size = 4096;
 
 // check for GD support
-if(!function_exists('ImageCreate')) {
-    //fatal_error('Error: Server does not support PHP image generation') ;
+if(!function_exists('imagecreatetruecolor')) {
+    wp_die( esc_html__( 'Error: Server does not support PHP image generation', 'suffusion' ) );
 }
 else {
-	if (isset($_GET["start"])) {
-		$req_start = $_GET["start"];
-	}
-	else {
-		$req_start = "#FFFFFF";
-	}
+	$req_start = isset($_GET["start"]) ? sanitize_hex_color($_GET["start"]) : "#FFFFFF";
+	$req_finish = isset($_GET["finish"]) ? sanitize_hex_color($_GET["finish"]) : "#FFFFFF";
+	
+	$width = isset($_GET["width"]) ? absint($_GET["width"]) : 1000;
+	$height = isset($_GET["height"]) ? absint($_GET["height"]) : 120;
+	
+	// Constraints to prevent DOS
+	$width = min(max($width, 1), 2000);
+	$height = min(max($height, 1), 2000);
 
-	if (isset($_GET["finish"])) {
-		$req_finish = $_GET["finish"];
-	}
-	else {
-		$req_finish = "#FFFFFF";
-	}
-
-	if (isset($_GET["width"])) {
-		$width = $_GET["width"];
-	}
-	else {
-		$width = "1000";
-	}
-
-	if (isset($_GET["height"])) {
-		$height = $_GET["height"];
-	}
-	else {
-		$height = "120";
-	}
-
-	// Legal directions: top-down, down-top, left-right, right-left, topleft-bottomright, topright-bottomleft
-	// bottomleft-topright, bottomright-topleft, middle-outwards, inwards-middle, radial-outwards, inwards-radial
-	if (isset($_GET["direction"])) {
-		$direction = $_GET["direction"];
-	}
-	else {
-		$direction = "top-down";
-	}
+	$allowed_directions = array("top-down", "down-top", "left-right", "right-left");
+	$direction = (isset($_GET["direction"]) && in_array($_GET["direction"], $allowed_directions)) ? $_GET["direction"] : "top-down";
 
 	$grad_image = imagecreatetruecolor($width, $height);
 
@@ -126,6 +102,8 @@ else {
 
 	header("Content-Type: image/jpeg");
 	imagejpeg($grad_image, NULL, 70);
+	imagedestroy($grad_image);
+	exit;
 }
 
 /* 

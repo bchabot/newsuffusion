@@ -28,8 +28,8 @@ if ($suf_footer_layout_style != 'in-align') {
 	<div id="cred">
 		<table>
 			<tr>
-				<td class="cred-left"><?php $strip = stripslashes($suf_footer_left); $strip = wp_specialchars_decode($strip, ENT_QUOTES); echo do_shortcode($strip); ?></td>
-				<td class="cred-center"><?php $strip = stripslashes($suf_footer_center); $strip = wp_specialchars_decode($strip, ENT_QUOTES); echo do_shortcode($strip); ?></td>
+				<td class="cred-left"><?php $strip = stripslashes($suf_footer_left); $strip = wp_specialchars_decode($strip, ENT_QUOTES); echo wp_kses_post(do_shortcode($strip)); ?></td>
+				<td class="cred-center"><?php $strip = stripslashes($suf_footer_center); $strip = wp_specialchars_decode($strip, ENT_QUOTES); echo wp_kses_post(do_shortcode($strip)); ?></td>
 				<td class="cred-right"><a href="https://aquoid.com/themes/suffusion/">Suffusion theme by Sayontan Sinha</a></td>
 			</tr>
 		</table>
