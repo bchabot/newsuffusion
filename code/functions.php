@@ -13,6 +13,8 @@ if (!defined('SUFFUSION_THEME_VERSION')) {
 require_once(get_template_directory().'/functions/framework.php');
 $suffusion_framework = new Suffusion_Framework();
 
+require_once(get_template_directory().'/functions/customizer.php');
+
 require_once(get_template_directory().'/admin/theme-definitions.php');
 
 add_action("after_setup_theme", "suffusion_theme_setup");
@@ -65,6 +67,13 @@ function suffusion_add_theme_supports() {
 
 	// Support for page excerpts
 	add_post_type_support('page', 'excerpt');
+
+	// Gutenberg / Block Editor Support
+	add_theme_support('align-wide');
+	add_theme_support('wp-block-styles');
+	add_theme_support('responsive-embeds');
+	add_theme_support('editor-styles');
+	add_editor_style('editor-style.css');
 
 	// Additional options for Suffusion. This shows the meta box below posts
 	add_theme_support('suffusion-additional-options');

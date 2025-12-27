@@ -193,9 +193,6 @@ function suffusion_enqueue_styles() {
 		wp_enqueue_style('bp-admin-bar', apply_filters('bp_core_admin_bar_css', $stylesheet), array(), BP_VERSION);
 	}
 
-	// IE-specific CSS, loaded if the browser is IE < 8
-	wp_enqueue_style('suffusion-ie', get_template_directory_uri().'/ie-fix.css', array('suffusion-theme'), SUFFUSION_THEME_VERSION);
-
 	// Custom styles, built based on selected options.
 	$css_loaded = false;
 	if ($suf_autogen_css == 'autogen-file') {
@@ -203,14 +200,14 @@ function suffusion_enqueue_styles() {
 		$custom_file = trailingslashit($upload_dir['basedir']).'suffusion/custom-styles.css';
 		if (@file_exists($custom_file)) {
 			$custom_file_url = $upload_dir['baseurl'].'/suffusion/custom-styles.css';
-			if ( is_ssl() ) $custom_file_url = str_replace( 'https://','https://', $custom_file_url );
-			wp_enqueue_style('suffusion-generated', $custom_file_url, array('suffusion-theme', 'suffusion-ie'), SUFFUSION_THEME_VERSION);
+			if ( is_ssl() ) $custom_file_url = str_replace( 'http://','https://', $custom_file_url );
+			wp_enqueue_style('suffusion-generated', $custom_file_url, array('suffusion-theme'), SUFFUSION_THEME_VERSION);
 			$css_loaded = true;
 		}
 	}
 
 	if (($suf_autogen_css == 'autogen' || $suf_autogen_css == 'nogen-link') || (!$css_loaded && $suf_autogen_css == 'autogen-file')) {
-		wp_enqueue_style('suffusion-generated?suffusion-css=css', home_url(), array('suffusion-theme', 'suffusion-ie'), SUFFUSION_THEME_VERSION);
+		wp_enqueue_style('suffusion-generated?suffusion-css=css', home_url(), array('suffusion-theme'), SUFFUSION_THEME_VERSION);
 	}
 
 	// Custom styles, from included CSS files
