@@ -18,12 +18,12 @@ get_header();
 		    <h2 class="posttitle">
 <?php
 if (trim($suf_404_title) == '') {
-	echo $suffusion_404_title;
+	echo esc_html($suffusion_404_title);
 }
 else {
 	$title = stripslashes($suf_404_title);
 	$title = do_shortcode($title);
-	echo $title;
+	echo wp_kses_post($title);
 }
 ?>
 		    </h2>
@@ -33,13 +33,13 @@ else {
 		<p>
 <?php
 if (trim($suf_404_content) == '') {
-	echo $suffusion_404_content;
+	echo esc_html($suffusion_404_content);
 }
 else {
 	$content = stripslashes($suf_404_content);
 	$content = wp_specialchars_decode($content, ENT_QUOTES);
 	$content = do_shortcode($content);
-	echo $content;
+	echo wp_kses_post($content);
 }
 ?>
 		</p>
