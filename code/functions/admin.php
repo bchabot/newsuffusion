@@ -43,6 +43,7 @@ function suffusion_add_post_meta_boxes() {
  * @return void
  */
 function suffusion_meta_fields($post, $args = array()) {
+	wp_nonce_field('suffusion_meta_save', 'suffusion_meta_nonce');
 	$additional_args = $args['args'];
 	if (isset($additional_args['type'])) {
 		$type = $additional_args['type'];
@@ -444,6 +445,18 @@ function suffusion_meta_fields($post, $args = array()) {
  * @param $post_id
  */
 function suffusion_save_post_fields($post_id) {
+	if (!isset($_POST['suffusion_meta_nonce']) || !wp_verify_nonce($_POST['suffusion_meta_nonce'], 'suffusion_meta_save')) {
+		return;
+	}
+
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+		return;
+	}
+
+	if (!current_user_can('edit_post', $post_id)) {
+		return;
+	}
+
 	$suffusion_post_fields = array('suf_thumbnail', 'suf_featured_image', 'suf_magazine_headline', 'suf_magazine_excerpt', 'suf_alt_page_title',
 		'suf_nav_unlinked', 'suf_pseudo_template', 'suf_hide_page_title', 'suf_toggle_breadcrumb',
 		'suf_hide_top_navigation', 'suf_hide_header', 'suf_hide_main_navigation', 'suf_hide_footer', 'suf_cpt_post_type', 'suf_cpt_total_posts',
@@ -459,7 +472,11 @@ function suffusion_save_post_fields($post_id) {
     if (isset($_POST['suffusion_post_meta'])) {
         foreach ($suffusion_post_fields as $post_field) {
 	        if (isset($_POST[$post_field])) {
-		        $data = stripslashes($_POST[$post_field]);
+				if (in_array($post_field, array('suf_cpt_total_posts', 'suf_cpt_full_posts'))) {
+					$data = (trim($_POST[$post_field]) === '') ? '' : (int)$_POST[$post_field];
+				} else {
+		        	$data = sanitize_text_field(wp_unslash($_POST[$post_field]));
+				}
 	        }
 	        else {
 		        $data = '';

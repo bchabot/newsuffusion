@@ -38,7 +38,7 @@ function suffusion_customize_register($wp_customize) {
 	$wp_customize->add_setting('suffusion_options[suf_wrapper_width]', array(
 		'default'           => '1000',
 		'type'              => 'option',
-		'sanitize_callback' => 'sanitize_text_field',
+		'sanitize_callback' => 'absint',
 		'transport'         => 'refresh',
 	));
 
